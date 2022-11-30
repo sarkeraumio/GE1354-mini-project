@@ -1,0 +1,13 @@
+# L04 Group7
+from ssd1306 import initialize, clear_oled
+from ssd1306_text import add_text
+from microbit import *
+
+initialize()
+clear_oled()
+add_text(1, 1, "Aumio")
+add_text(1, 3, "57185326")
+
+while True:
+    if button_a.is_pressed():
+        clear_oled()
