@@ -1,0 +1,44 @@
+from microbit import *
+from ssd1306 import initialize, clear_oled
+from ssd1306_text import add_text
+import microbit
+import radio                      # Import Radio Functions
+
+radio.on()
+
+initialize()
+clear_oled()
+add_text(0, 0,"SYS: 117")
+add_text(0,1,"DIA: 84")
+add_text(0,2, "HB: 71")
+
+
+
+
+alphabet = ["71","71","71"]        # Store Our Alphabet, you can add more.
+alphIndex = 0                   # Initialise the index variable.
+
+
+microbit.display.scroll(alphabet[alphIndex])              # Display Currently Indexed Character
+
+while True: # our old friend
+    if microbit.button_a.is_pressed() == 1:             # Check if button A is pressed
+        alphIndex = alphIndex + 1                       # If it is advance the Alphabet index
+        if alphIndex > len(alphabet)-1:                 # Check if alphIndex is still in range
+            alphIndex = 0;               # Restet index to zero
+
+        microbit.display.scroll(alphabet[alphIndex])
+        #microbit.display.show(alphabet[alphIndex])      # Display Indexed Character
+        microbit.sleep(125)                             # sleep for debouncing
+
+    if microbit.button_b.is_pressed() == 1:             # Check if button B is pressed
+        radio.send(alphabet[alphIndex])                 # Send current character
+        microbit.sleep(125)                             # sleep for debouncing
+
+    incoming = radio.receive()                          # grab incoming message
+
+    if incoming:                                        # if there is a message
+        microbit.display.scroll(incoming)               # Scroll the incoming character
+        #microbit.display.show(alphabet[alphIndex])      # Return to displaying what we will send
+
+    microbit.sleep(125)
