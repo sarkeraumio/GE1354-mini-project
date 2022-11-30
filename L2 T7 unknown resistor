@@ -1,0 +1,15 @@
+from microbit import *
+
+Vcc = 3.3
+Max_analog_value = 1023
+
+while True:
+    m0_voltage = pin0.read_analog()
+    m1_voltage = pin1.read_analog()
+    mt2_voltage = Vcc * m0_voltage / Max_analog_value
+    mt1_voltage = Vcc * m1_voltage / Max_analog_value
+    V = mt2_voltage - mt1_voltage
+    C = V / 2200
+    R = mt1_voltage / C
+    print("Re resistance is ", R)
+    sleep(1000)
