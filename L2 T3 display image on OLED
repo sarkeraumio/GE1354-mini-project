@@ -1,0 +1,13 @@
+#lab 2 task 3 gp7
+#a program that can display an image(microbit logo) on the OLED board at 1 second interval.
+
+from ssd1306 import initialize, clear_oled
+from ssd1306_bitmap import show_bitmap
+from ssd1306_effects import blink
+from microbit import*
+
+while True:
+    initialize()
+    clear_oled()
+    show_bitmap("microbit_logo")
+    blink(1000)
