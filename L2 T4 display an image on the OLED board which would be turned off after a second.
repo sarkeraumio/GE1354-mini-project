@@ -1,0 +1,12 @@
+ #L04 Group7
+from ssd1306 import initialize, clear_oled
+from ssd1306_stamp import draw_stamp
+from ssd1306_img import create_stamp
+from microbit import *
+
+initialize()
+clear_oled()
+stamp = create_stamp(Image.SNAKE)
+draw_stamp(10, 10, stamp, 1)
+sleep(1000)
+draw_stamp(10, 10, stamp, 0)
