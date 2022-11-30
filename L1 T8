@@ -1,0 +1,8 @@
+from microbit import *
+pwm = pin0
+
+while True:
+    pwm.write_analog(1023)
+    sleep(1000)
+    pwm.write_analog(0)
+    sleep(1000)
