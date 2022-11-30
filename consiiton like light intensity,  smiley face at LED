@@ -1,0 +1,15 @@
+from microbit import *
+
+import speech
+while True:
+    light_intensity = display.read_light_level()
+    print("light intensity = ", light_intensity)
+    if light_intensity < 100:
+        speech.say("it's dark")
+        display.show(Image.SAD)
+    elif light_intensity > 200:
+        speech.say("it's sunny")
+        display.show(Image.HAPPY)
+    else:
+        display.show(Image.HEART)
+    sleep(1000)
