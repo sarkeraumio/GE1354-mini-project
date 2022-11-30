@@ -1,0 +1,10 @@
+from microbit import *
+
+import speech
+
+while True:
+    if button_a.was_pressed():
+        speech.say("hello! nice to meet you")
+    if button_b.was_pressed():
+        speech.say("My name is peter", speed=80, pitch=40)
+    sleep(1000)
