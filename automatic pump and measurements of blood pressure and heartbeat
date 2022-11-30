@@ -1,0 +1,138 @@
+#automatic pump and measurements of blood pressure and heartbeat
+
+from microbit import *
+from ssd1306 import initialize, clear_oled
+from ssd1306_text import add_text
+import music
+# import speech
+
+initialize()
+clear_oled()
+sleep(2000)
+loop = 0
+fmax_bp = 0
+fmin_bp = 0
+max_bp = 0
+min_bp = 1023
+max_flag = True
+min_flag = True
+amp_bp = 0
+avmp_bp = []
+SYSf = 0
+DIAf = 0
+f = 0
+l_avmmp = float(0)
+avmmp = 0
+SYS_record = 0
+DIA_record = 0
+hb = 0
+t = 0
+def mean(datalist):
+    sum = 0
+    for i in datalist:
+        sum += i
+    if len(datalist) > 0:
+        return sum / len(datalist)
+    else:
+        return None
+
+while True:
+    add_text(0, 0, "Press button a to start")
+    add_text(0, 1, "A to start")
+    if button_a.is_pressed():
+        pin2.write_analog(1023)
+        sleep(5500)
+        pin2.write_analog(0)
+        sleep(1000)
+        val_bp = int((pin1.read_analog() * 0.258) - 24)
+        add_text(0, 0, "BP: " + str(val_bp) + "      ")
+        break
+initialize()
+clear_oled()
+while True:
+    pin8.write_digital(1)
+    val_bp = int((pin1.read_analog() * 0.258) - 24)
+    #    prl_avmmp((pin0.read_analog(), val_bp))
+    signal = 0
+    for i in range(10):
+        signal = pin0.read_analog() + signal
+        c_bp = signal / 10
+    if max_flag:
+        if c_bp > max_bp:
+            max_bp = c_bp
+        else:
+            if (max_bp - c_bp) > 10:
+                fmax_bp = max_bp
+                max_flag = False
+    if min_flag:
+        if c_bp < min_bp:
+            min_bp = c_bp
+        else:
+            if (c_bp - min_bp) > 10:
+                fmin_bp = min_bp
+                min_flag = False
+    if not (max_flag) and not (min_flag):
+        amp_bp = max_bp - min_bp
+        avmp_bp.append(amp_bp)
+        if loop == 0:
+            avmmp = mean(avmp_bp)
+            avmp_bp.pop(0)
+        # add_text(0, 1, "magP: " + str(avmmp) + "      ")
+        max_bp = 0
+        min_bp = 1023
+        max_flag = True
+        min_flag = True
+        # prl_avmmp((c_bp,))
+        iavmmp = float(avmmp)
+        if (iavmmp - l_avmmp > 10) & (iavmmp - l_avmmp < 30):
+            SYS_record = val_bp
+        if (SYS_record != 0) & (SYSf == 0):
+            if iavmmp - l_avmmp >= 0:
+                f += 1
+            else:
+                f = 0
+                SYS_record = 0
+            if f == 5:
+                # add_text(0, 1, "SYS: " + str(SYS_record) + "      ")
+                SYSf = 1
+                hb = 1
+                t = 1
+        if SYSf != 0:
+            hb += 1
+            if iavmmp - l_avmmp < 2:
+                if DIAf == 0:
+                    DIA_record = val_bp
+                DIAf += 1
+            else:
+                DIAf = 0
+        if DIAf > 5:
+            add_text(0, 1, "DIA: " + str(DIA_record) + "      ")
+            # add_text(0, 3, "release air")
+            break
+        print(iavmmp - l_avmmp)
+        l_avmmp = iavmmp
+    loop = loop + 1
+    if t > 0:
+        t += 1
+        print(t)
+    if (loop % 10) == 0:
+        add_text(0, 0, "BP: " + str(val_bp) + "      ")
+        loop = 0
+    print(t)
+    sleep(1)
+t = t / 32
+hb = int(hb / t * 60)
+pin8.write_digital(0)
+add_text(0, 0, "SYS: " + str(SYS_record) + "      ")
+add_text(0, 2, "HB: " + str(hb))
+if SYS_record > 130 | DIA_record > 80:
+    music.play("C4:4")
+    for i in range(0, 4):
+        pin12.write_digital(1)
+        sleep(500)
+        pin12.write_digital(0)
+        sleep(500)
+        display.show(Image.SAD)
+else:
+    pin13.write_digital(1)
+    display.show(Image.HAPPY)
