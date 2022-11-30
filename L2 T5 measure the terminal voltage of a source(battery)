@@ -1,0 +1,9 @@
+from microbit import *
+Vcc = 3.3
+Max_analog_value = 1023
+
+while True:
+    md_voltage = pin0.read_analog()
+    m_voltage = Vcc * md_voltage / Max_analog_value
+    print("The measure is ", m_voltage, "V")
+    sleep(1000)
