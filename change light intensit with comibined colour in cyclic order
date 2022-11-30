@@ -1,0 +1,21 @@
+from microbit import *
+
+pwr = pin0
+pwg = pin1
+pwb = pin2
+
+while True:
+    pwr.write_analog(1023)
+    sleep(1000)
+    pwr.write_analog(0)
+    pwg.write_analog(1023)
+    sleep(1000)
+    pwg.write_analog(0)
+    pwb.write_analog(1023)
+    sleep(1000)
+    pwr.write_analog(1023)
+    sleep(1000)
+    pwg.write_analog(1023)
+    sleep(1000)
+    pwg.write_analog(0)
+    pwb.write_analog(0)
